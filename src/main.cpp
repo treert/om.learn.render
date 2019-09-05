@@ -117,7 +117,7 @@ int main()
         // -----
         processInput(window);
 
-        XSoftRender::Instance()->frame_buffer->Clear(0.2f, 0.3f, 0.3f, 1.0f);
+        XSoftRender::Instance().frame_buffer.Clear(0.2f, 0.3f, 0.3f, 1.0f);
         // render
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -126,7 +126,7 @@ int main()
         // activate shader
         ourShader.use();
 
-        XSoftRender::Instance()->frame_buffer->UseInOpenGL();
+        XSoftRender::Instance().frame_buffer.UseInOpenGL();
         ourShader.setInt("ourTexture", 0);
 
         // render boxes

@@ -3,26 +3,16 @@
 
 #include <glad/glad.h>
 
+#include "XCommon.h"
+
 #define rep(i,n) for (int i=0;i<(n);++i)
 
 
-class IFrameBuffer
+class XFrameBuffer
 {
 public:
-    virtual float GetDepth(int x,int y) = 0;
-    virtual void SetDepth(int x, int y, float depth) = 0;
-    virtual void SetColor(int x, int y, float r, float g, float b, float a = 0) = 0;
-    virtual void Clear(float r, float g, float b, float a = 0) = 0;
-
-    virtual void UseInOpenGL() = 0;
-};
-
-template<int W, int H>
-class XFrameBuffer:public IFrameBuffer
-{
-public:
-    float color_buffer[W][H][4];
-    float depth_buffer[W][H];
+    float color_buffer[WITH][HEIGHT][4];
+    float depth_buffer[WITH][HEIGHT];
 
     unsigned int ID;
 
@@ -41,19 +31,19 @@ public:
         ID = texture;
     }
 
-    virtual float GetDepth(int x, int y) override
+    float GetDepth(int x, int y)
     {
         return depth_buffer[x][y];
     }
 
 
-    virtual void SetDepth(int x, int y, float depth) override
+    void SetDepth(int x, int y, float depth)
     {
         depth_buffer[x][y] = depth;
     }
 
 
-    virtual void SetColor(int x, int y, float r, float g, float b, float a = 0) override
+    void SetColor(int x, int y, float r, float g, float b, float a = 0)
     {
         color_buffer[x][y][0] = r;
         color_buffer[x][y][1] = g;
@@ -62,19 +52,19 @@ public:
     }
 
 
-    virtual void UseInOpenGL() override
+    void UseInOpenGL()
     {
         GLenum pos = GL_TEXTURE0;
         glActiveTexture(pos);
         glBindTexture(GL_TEXTURE_2D, ID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, W, H, 0, GL_RGBA, GL_FLOAT, &color_buffer[0][0][0]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WITH, HEIGHT, 0, GL_RGBA, GL_FLOAT, &color_buffer[0][0][0]);
     }
 
 
-    virtual void Clear(float r, float g, float b, float a = 0) override
+    void Clear(float r, float g, float b, float a = 0)
     {
-        rep(x, W)
-            rep(y, H) 
+        rep(x, WITH)
+            rep(y, HEIGHT) 
         {
             depth_buffer[x][y] = std::numeric_limits<float>::max();
             color_buffer[x][y][0] = r;
