@@ -102,7 +102,8 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    
+    std::shared_ptr<XSoftRender> soft_render(new XSoftRender());
+
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -117,7 +118,6 @@ int main()
         // -----
         processInput(window);
 
-        XSoftRender::Instance().frame_buffer.Clear(0.2f, 0.3f, 0.3f, 1.0f);
         // render
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -126,7 +126,7 @@ int main()
         // activate shader
         ourShader.use();
 
-        XSoftRender::Instance().frame_buffer.UseInOpenGL();
+        soft_render->Test();
         ourShader.setInt("ourTexture", 0);
 
         // render boxes

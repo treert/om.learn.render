@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 
 #include "XCommon.h"
+#include "XData.h"
 
 #define rep(i,n) for (int i=0;i<(n);++i)
 
@@ -11,8 +12,8 @@
 class XFrameBuffer
 {
 public:
-    float color_buffer[WITH][HEIGHT][4];
-    float depth_buffer[WITH][HEIGHT];
+    float color_buffer[WIDTH][HEIGHT][4];
+    float depth_buffer[WIDTH][HEIGHT];
 
     unsigned int ID;
 
@@ -42,6 +43,9 @@ public:
         depth_buffer[x][y] = depth;
     }
 
+    void SetColor(int x, int y, const xdata::Color &color) {
+        SetColor(x, y, color.r, color.g, color.b, color.a);
+    }
 
     void SetColor(int x, int y, float r, float g, float b, float a = 0)
     {
@@ -57,13 +61,13 @@ public:
         GLenum pos = GL_TEXTURE0;
         glActiveTexture(pos);
         glBindTexture(GL_TEXTURE_2D, ID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WITH, HEIGHT, 0, GL_RGBA, GL_FLOAT, &color_buffer[0][0][0]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGBA, GL_FLOAT, &color_buffer[0][0][0]);
     }
 
 
     void Clear(float r, float g, float b, float a = 0)
     {
-        rep(x, WITH)
+        rep(x, WIDTH)
             rep(y, HEIGHT) 
         {
             depth_buffer[x][y] = std::numeric_limits<float>::max();

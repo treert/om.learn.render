@@ -8,11 +8,8 @@ class XMesh;
 
 class XGameObject
 {
-private:
-    XGameObject() {
-        parent = nullptr;
-        rotate = xdata::GenIdentityQuat();
-    }
+protected:
+    XGameObject();
 public:
     static XGameObject*Create() {
         return new XGameObject();
@@ -63,18 +60,19 @@ public:
 
 #pragma endregion
 
-    
-    
-
     std::shared_ptr<XMesh> mesh;
 
     xdata::vec3 pos;
-    xdata::quat rotate;
+    xdata::vec3 scale;
+    xdata::vec3 eulers;
+    // xdata::quat rotate;
 
-    
-
+    xdata::vec3 GetForwardDir();
+    xdata::vec3 GetUpDir();
     xdata::mat4 GetMatToParent();
+    xdata::mat4 GetMatToWorld();
     void Move(const xdata::vec3 &motion);
+    void Move(float x, float y, float z);
     void Rotate(float x, float y, float z);
     void Rotate(const xdata::vec3 &axis, float angle);
 };
