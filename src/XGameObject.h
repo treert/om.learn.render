@@ -37,6 +37,7 @@ public:
         while (tmp)
         {
             if (tmp == this) throw "will has circle";
+            tmp = tmp->parent;
         }
 
         RemoveFromParent();

@@ -8,6 +8,8 @@ XGameObject::XGameObject()
 {
     parent = nullptr;
     scale = vec3(1);
+    pos = vec3(0);
+    eulers = vec3(0);
 }
 
 xdata::vec3 XGameObject::GetForwardDir()
@@ -35,7 +37,7 @@ xdata::mat4 XGameObject::GetMatToParent()
 {
     // M = TRS
     mat4 t = glm::translate(mat4(1), pos);
-    mat4 r = glm::mat4_cast(quat(eulers));
+    mat4 r = glm::mat4_cast(quat(glm::radians(eulers)));
     mat4 s = glm::scale(mat4(1), scale);
     return t * r * s ;
 }
@@ -69,7 +71,7 @@ void XGameObject::Rotate(float x, float y, float z)
 
 void XGameObject::Rotate(const xdata::vec3 &axis, float angle)
 {
-    quat qua = quat(eulers);
-    qua = glm::rotateNormalizedAxis(qua, angle, glm::normalize(axis));
-    eulers = glm::eulerAngles(qua);
+    quat qua = quat(glm::radians(eulers));
+    qua = glm::rotateNormalizedAxis(qua, glm::radians(angle), glm::normalize(axis));
+    eulers = glm::degrees(glm::eulerAngles(qua));
 }

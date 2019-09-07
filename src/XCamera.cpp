@@ -9,8 +9,8 @@ XCamera::XCamera():XGameObject()
     _near = 1;
     _far = 100;
 
-    MovementSpeed = 0.5f;
-    MouseSensitivity = 0.01f;
+    MovementSpeed = 2.5f;
+    MouseSensitivity = 0.1f;
 }
 
 xdata::mat4 XCamera::GetViewMat()

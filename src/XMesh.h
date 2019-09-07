@@ -11,5 +11,5 @@ public:
     std::vector<xdata::vec2> uvs;
     std::vector<xdata::vec3> normals;
 
-    static XMesh* CreateCube();
+    static XMesh* CreateSphere(int level = 5);
 };

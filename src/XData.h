@@ -26,6 +26,8 @@ namespace xdata {
         vec2 uv;
         vec3 normal;
 
+        vec3 world_pos;
+
         int row, col;// 屏幕像素坐标
 
 
@@ -38,6 +40,7 @@ namespace xdata {
             one /= pos.w;
             uv /= pos.w;
             normal /= pos.w;
+            world_pos /= pos.w;
 
             pos /= pos.w;
         }
@@ -83,8 +86,8 @@ namespace xdata {
            
         }
 
-        bool TestAndInterpolate(int i, int k, V2F&out) {
-            float x = i + 0.5f, y = k + 0.5f;
+        bool TestAndInterpolate(int col, int row, V2F&out) const{
+            float x = col + 0.5f, y = row + 0.5f;
             vec3 t_p = vec3(x, y, 1);
             float f0 = glm::dot(E0, t_p)*v[0].one;
             float f1 = glm::dot(E1, t_p)*v[1].one;
@@ -101,15 +104,41 @@ namespace xdata {
             lerp(one);
             lerp(uv);
             lerp(normal);
+            lerp(world_pos);
 #undef lerp
             // 得到期望的插值
             out.uv /= out.one;
             out.normal /= out.one;
+            out.world_pos /= out.one;
 
-            out.row = i;
-            out.col = k;
+            out.row = row;
+            out.col = col;
 
             return true;
+        }
+
+        bool TestRectInTriangle(int l, int r, int b, int t) const {
+            vec3 point[2][2] = {
+                {
+                    vec3(l+0.5f,b + 0.5f,1),
+                    vec3(r + 0.5f,b + 0.5f,1),
+                },
+                {
+                    vec3(l + 0.5f,t + 0.5f,1),
+                    vec3(r + 0.5f,t + 0.5f,1),
+                }
+            };
+            return _TestRectInHalfPlane(E0, point)
+                && _TestRectInHalfPlane(E1, point)
+                && _TestRectInHalfPlane(E2, point);
+        }
+
+        bool _TestRectInHalfPlane(const vec3 &plane, const vec3 point[2][2] ) const {
+            int i = plane.y < 0 ? 0 : 1;
+            int k = plane.x < 0 ? 0 : 1;
+
+            float e = glm::dot(plane, point[i][k]);
+            return e >= 0;
         }
     };
 }
