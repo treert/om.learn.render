@@ -69,6 +69,7 @@ public:
 
     xdata::vec3 GetForwardDir();
     xdata::vec3 GetUpDir();
+    xdata::vec3 GetRightDir();
     xdata::mat4 GetMatToParent();
     xdata::mat4 GetMatToWorld();
     void Move(const xdata::vec3 &motion);

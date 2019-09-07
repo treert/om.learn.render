@@ -5,14 +5,5 @@ namespace xdata {
 
 
 
-    xdata::mat4 GenIdentityMat()
-    {
-        return glm::identity<mat4>();
-    }
-
-    xdata::quat GenIdentityQuat()
-    {
-        return glm::identity<quat>();
-    }
 
 }

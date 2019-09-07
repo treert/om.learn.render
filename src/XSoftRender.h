@@ -34,8 +34,6 @@ private:
     xdata::vec3 m_view_dir;
 
 public:
-    void Test();
-
     void Render(XGameObject *scene);
     void Render(XGameObject *go, const xdata::mat4 &parent_world_mat);
 

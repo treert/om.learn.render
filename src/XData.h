@@ -15,9 +15,6 @@ namespace xdata {
 
     typedef typename glm::vec4 Color;
 
-    mat4 GenIdentityMat();
-    quat GenIdentityQuat();
-
 
     // 几何阶段的输入输出，像素处理阶段的输入，也是光栅化阶段的输出
     struct V2F
@@ -36,15 +33,13 @@ namespace xdata {
             one = 1;
         }
 
-        bool HomogeneousDivision() {
+        void HomogeneousDivision() {
             // 这些是为了后面插值做准备的
             one /= pos.w;
             uv /= pos.w;
             normal /= pos.w;
 
             pos /= pos.w;
-
-            return pos.x >= -1 && pos.x <= 1 && pos.y >= -1 && pos.y <= 1 && pos.z >= -1 && pos.z <= 1;
         }
 
         void ScreenMap(int with, int height) {
@@ -59,17 +54,14 @@ namespace xdata {
     {
         V2F v[3];
 
-        bool valid = false;
         float A2;// 三角形向量面积*2
         vec3 E0, E1, E2;
 
         void Setup(int with, int height) {
             // 齐次除法
-            valid = false;
-            valid = valid || v[0].HomogeneousDivision();
-            valid = valid || v[1].HomogeneousDivision();
-            valid = valid || v[2].HomogeneousDivision();
-            if (valid == false) return;// 不在像机里
+            v[0].HomogeneousDivision();
+            v[1].HomogeneousDivision();
+            v[2].HomogeneousDivision();
 
             // 屏幕映射
             v[0].ScreenMap(with, height);
@@ -97,7 +89,7 @@ namespace xdata {
             float f0 = glm::dot(E0, t_p)*v[0].one;
             float f1 = glm::dot(E1, t_p)*v[1].one;
             float f2 = glm::dot(E2, t_p)*v[2].one;
-            if (f0 < 0 || f1 < 0 || f2 < 0) return false;// 不再三角形里
+            if (f0 < 0 || f1 < 0 || f2 < 0) return false;// 不在三角形里
 
             float u0 = f0 / (f0 + f1 + f2);
             float u1 = f1 / (f0 + f1 + f2);

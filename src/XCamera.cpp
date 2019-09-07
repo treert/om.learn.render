@@ -8,6 +8,9 @@ XCamera::XCamera():XGameObject()
     fov = 45;
     _near = 1;
     _far = 100;
+
+    MovementSpeed = 0.5f;
+    MouseSensitivity = 0.01f;
 }
 
 xdata::mat4 XCamera::GetViewMat()
@@ -18,5 +21,12 @@ xdata::mat4 XCamera::GetViewMat()
 
 xdata::mat4 XCamera::GetProjectMat()
 {
-    return glm::perspective(glm::radians(fov), (float)WIDTH / (float)HEIGHT, _near, _far);
+    float aspect = (float)WIDTH / (float)HEIGHT;
+
+    mat4 mat;
+
+    //mat = glm::ortho<float>(-1, 1, -1, 1, 0, _far);
+    mat = glm::perspective(glm::radians(fov), aspect, _near, _far);
+
+    return mat;
 }

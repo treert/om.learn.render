@@ -15,15 +15,6 @@ XSoftRender& XSoftRender::Instance()
     return *_instance;
 }
 
-void XSoftRender::Test()
-{
-    XGameObject *root = XGameObject::Create();
-    root->mesh.reset(XMesh::CreateCube());
-    root->Move(1, 2, 3);
-
-    this->Render(root);
-}
-
 void XSoftRender::Render(XGameObject *scene)
 {
     assert(scene->parent == nullptr);
@@ -37,7 +28,7 @@ void XSoftRender::Render(XGameObject *scene)
     m_light_dir = -light.GetForwardDir();
     m_view_dir = -camera.GetForwardDir();
 
-    auto mat = GenIdentityMat();
+    auto mat = mat4(1);
 
     Render(scene, mat);
 
@@ -92,9 +83,9 @@ void XSoftRender::RenderTriangle(xdata::R_in in)
 {
     // Triangle Setup
     in.Setup(WIDTH,HEIGHT);
-    //if (in.A2 <= 0 || in.valid == false) {
-    //    return;// 过滤掉
-    //}
+    if (in.A2 <= 0) {
+        return;// 过滤掉
+    }
     // Triangle Travel
     std::vector<xdata::V2F> frags;
     Raterize(in, frags);
@@ -108,10 +99,22 @@ void XSoftRender::Raterize(xdata::R_in in, std::vector<xdata::V2F> &out)
 {
     V2F frag;
     // 先写个极端暴力的
-    rep(i, WIDTH)
-        rep(k, HEIGHT) {
-        if (in.TestAndInterpolate(i, k, frag)) {
-            FragmentProcess(frag);
+    rep(i, HEIGHT ) {
+        int s1 = -1;
+        int s2 = -1;
+        rep(k, WIDTH) {
+            if (in.TestAndInterpolate(i, k, frag)) {
+                FragmentProcess(frag);
+                if (s1 == -1) s1 = k;
+                else if (s2 != -1) {
+                    s2++;
+                }
+            }
+            else if (s1 != -1) {
+                if (s2 == -1) {
+                    s2 = k;
+                }
+            }
         }
     }
 }
@@ -123,7 +126,8 @@ void XSoftRender::FragmentProcess(xdata::V2F v2f)
     if (depth < v2f.pos.z) {
         return;
     }
-    else {
+    else 
+    {
         frame_buffer.SetDepth(v2f.row, v2f.col, v2f.pos.z);
     }
     // calc color

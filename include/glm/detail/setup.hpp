@@ -3,6 +3,8 @@
 #include <cassert>
 #include <cstddef>
 
+#define GLM_FORCE_LEFT_HANDED
+
 #define GLM_VERSION_MAJOR			0
 #define GLM_VERSION_MINOR			9
 #define GLM_VERSION_PATCH			9

@@ -18,19 +18,31 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
 
-// camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
+std::shared_ptr<XSoftRender> soft_render;
+
+float lastX = WIDTH / 2.0f;
+float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
 
 // timing
 float deltaTime = 0.0f; // time between current frame and last frame
 float lastFrame = 0.0f;
+
+void PrintDebugInfo() {
+
+    auto prt_v3 = [](const xdata::vec3&v3) {
+        printf("(%.1f,%.1f,%.1f)\n", v3.x, v3.y, v3.z);
+    };
+
+    std::cout << "camera pos: ";
+    prt_v3(soft_render->camera.pos);
+    std::cout << "camera dir: ";
+    prt_v3(soft_render->camera.GetForwardDir());
+    std::cout << "camera rot: ";
+    prt_v3(soft_render->camera.eulers);
+}
+
 
 int main()
 {
@@ -47,7 +59,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -55,12 +67,13 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
+    glfwSetWindowAttrib(window, GLFW_RESIZABLE, GLFW_FALSE);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
     // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -102,8 +115,17 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    std::shared_ptr<XSoftRender> soft_render(new XSoftRender());
+    soft_render.reset(new XSoftRender());
+    XGameObject *scene = XGameObject::Create();
+    scene->mesh.reset(XMesh::CreateCube());
+    {
+        scene->pos = xdata::vec3(0,0,3);
+    }
 
+    float fps = 0;
+
+    float start_time = glfwGetTime();
+    lastFrame = start_time;
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -112,7 +134,16 @@ int main()
         // --------------------
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
+        if (deltaTime < 0.0001f) continue;
+
         lastFrame = currentFrame;
+
+        fps = fps * 0.99f + 0.01f*(1 / deltaTime);
+        if (start_time + 3 < currentFrame) {
+            start_time = currentFrame;
+            std::cout << "fps: " << fps << "\n";
+            PrintDebugInfo();
+        }
 
         // input
         // -----
@@ -126,7 +157,7 @@ int main()
         // activate shader
         ourShader.use();
 
-        soft_render->Test();
+        soft_render->Render(scene);
         ourShader.setInt("ourTexture", 0);
 
         // render boxes
@@ -144,11 +175,14 @@ int main()
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 
+    XGameObject::Destroy(scene);
+
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
     return 0;
 }
+
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
@@ -158,13 +192,13 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
+        soft_render->camera.ProcessKeyboard(XCamera::FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
+        soft_render->camera.ProcessKeyboard(XCamera::BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
+        soft_render->camera.ProcessKeyboard(XCamera::LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+        soft_render->camera.ProcessKeyboard(XCamera::RIGHT, deltaTime);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -194,12 +228,16 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     lastX = xpos;
     lastY = ypos;
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+    if (abs(xoffset) + abs(yoffset) > 3) {
+        return;
+    }
+
+    soft_render->camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.ProcessMouseScroll(yoffset);
+    soft_render->camera.ProcessMouseScroll(yoffset);
 }

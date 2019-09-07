@@ -7,7 +7,6 @@ using namespace xdata;
 XGameObject::XGameObject()
 {
     parent = nullptr;
-    eulers = vec3(1);
     scale = vec3(1);
 }
 
@@ -21,6 +20,13 @@ xdata::vec3 XGameObject::GetForwardDir()
 xdata::vec3 XGameObject::GetUpDir()
 {
     xdata::vec4 dir(0, 1, 0, 0);
+    dir = GetMatToWorld()*dir;
+    return glm::normalize(dir);
+}
+
+xdata::vec3 XGameObject::GetRightDir()
+{
+    xdata::vec4 dir(1, 0, 0, 0);
     dir = GetMatToWorld()*dir;
     return glm::normalize(dir);
 }

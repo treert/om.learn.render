@@ -12,8 +12,8 @@
 class XFrameBuffer
 {
 public:
-    float color_buffer[WIDTH][HEIGHT][4];
-    float depth_buffer[WIDTH][HEIGHT];
+    float color_buffer[HEIGHT][WIDTH][4];
+    float depth_buffer[HEIGHT][WIDTH];
 
     unsigned int ID;
 
@@ -67,8 +67,8 @@ public:
 
     void Clear(float r, float g, float b, float a = 0)
     {
-        rep(x, WIDTH)
-            rep(y, HEIGHT) 
+        rep(x, HEIGHT )
+            rep(y, WIDTH)
         {
             depth_buffer[x][y] = std::numeric_limits<float>::max();
             color_buffer[x][y][0] = r;
