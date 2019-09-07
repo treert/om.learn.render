@@ -89,7 +89,33 @@ int main()
 
     // build and compile our shader zprogram
     // ------------------------------------
-    Shader ourShader("soft_render.vs", "soft_render.fs");
+    // Shader ourShader("soft_render.vs", "soft_render.fs");
+    Shader ourShader;
+
+    ourShader.Parse(
+        "\
+#version 330 core\n\
+layout(location = 0) in vec3 aPos;\
+out vec2 TexCoord;\
+void main()\
+{\
+    TexCoord = (aPos.xy + 1) / 2;\
+    TexCoord.y = 1 - TexCoord.y;\
+    gl_Position = vec4(aPos, 1.0);\
+}\
+"
+,
+"\
+#version 330 core\n\
+out vec4 FragColor;\
+in vec2 TexCoord;\
+uniform sampler2D ourTexture;\
+void main()\
+{\
+    FragColor = texture(ourTexture, TexCoord);\
+}\
+"
+);
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
