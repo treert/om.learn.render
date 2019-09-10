@@ -83,7 +83,7 @@ void XSoftRender::RenderTriangle(xdata::R_in in)
 {
     // Triangle Setup
     in.Setup(WIDTH,HEIGHT);
-    if (in.A2 <= 0) {
+    if (in.TestWholeTriangle() == false) {
         return;// ¹ýÂËµô
     }
     // Triangle Travel
@@ -141,9 +141,9 @@ void XSoftRender::Raterize(xdata::R_in in)
     float maxy = fmax(in.v[0].pos.y, in.v[1].pos.y, in.v[2].pos.y);
 
     int l = std::max(0, (int)floor(minx));
-    int r = std::min(WIDTH, (int)ceil(maxx));
+    int r = std::min(WIDTH, (int)ceil(maxx+1));
     int b = std::max(0, (int)floor(miny));
-    int t = std::min(HEIGHT, (int)ceil(maxy));
+    int t = std::min(HEIGHT, (int)ceil(maxy+1));
 
     HierarchicalTileTraversal(in, l, r, b, t);
 
@@ -192,7 +192,8 @@ void XSoftRender::FragmentProcess(xdata::V2F v2f)
         vec3 viewDir = glm::normalize(camera.pos - v2f.world_pos);
         vec3 halfDir = glm::normalize(light_dir + viewDir);
 
-        vec3 specular = color_light * color_specular * pow(std::max(0.0f, glm::dot(normal, halfDir)), 32);
+        vec3 specular = color_light * color_specular *  pow(std::max(0.0f, glm::dot(normal, halfDir)), 32);
+        // vec3 specular = color_light * color_specular * glm::clamp(glm::dot(normal, halfDir)*100 - 97,0.0f,1.0f);
 
         color = vec4(ambient + diffuse + specular, 1);
         // color = vec4(ambient + diffuse, 1);

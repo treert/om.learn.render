@@ -86,6 +86,13 @@ namespace xdata {
            
         }
 
+        bool TestWholeTriangle() {
+            if (A2 <= 0) return false;
+            if (v[0].pos.z < -1 && v[1].pos.z < -1 && v[2].pos.z < -1) return false;
+            if (v[0].pos.z > 1 && v[1].pos.z > 1 && v[2].pos.z > 1) return false;
+            return true;
+        }
+
         bool TestAndInterpolate(int col, int row, V2F&out) const{
             float x = col + 0.5f, y = row + 0.5f;
             vec3 t_p = vec3(x, y, 1);
@@ -106,6 +113,7 @@ namespace xdata {
             lerp(normal);
             lerp(world_pos);
 #undef lerp
+            if (out.pos.z > 1 || out.pos.z < -1) return false;// 裁切掉了
             // 得到期望的插值
             out.uv /= out.one;
             out.normal /= out.one;
