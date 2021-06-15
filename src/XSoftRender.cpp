@@ -152,8 +152,8 @@ void XSoftRender::Raterize(xdata::R_in in)
 
 xdata::V2F XSoftRender::VectexProcess(xdata::V2F in)
 {
-    in.pos = mat_mvp * in.pos;
     in.world_pos = mat_model * in.pos;
+    in.pos = mat_mvp * in.pos;
     in.normal = vec4(in.normal, 0) * mat_world2model;// 法线变换到世界
 
     // in.normal = mat_model * vec4(in.normal, 0);
