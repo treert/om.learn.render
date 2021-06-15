@@ -9,6 +9,8 @@ set(PROJECT_VERSION_EXTRA "")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 set(PROJECT_VERSION_FULL "${PROJECT_VERSION}.${PROJECT_VERSION_PATCH}${PROJECT_VERSION_EXTRA}")
 
+set(WIN32 True)
+
 # set source group recursive
 # > https://www.cnblogs.com/zjutzz/p/7284114.html
 # > https://stackoverflow.com/questions/31422680/how-to-set-visual-studio-filters-for-nested-sub-directory-using-cmake

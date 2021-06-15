@@ -192,7 +192,7 @@ void XSoftRender::FragmentProcess(xdata::V2F v2f)
         vec3 viewDir = glm::normalize(camera.pos - v2f.world_pos);
         vec3 halfDir = glm::normalize(light_dir + viewDir);
 
-        vec3 specular = color_light * color_specular *  pow(std::max(0.0f, glm::dot(normal, halfDir)), 32);
+        vec3 specular = color_light * color_specular * (float) pow(std::max(0.0f, glm::dot(normal, halfDir)), 32);
         // vec3 specular = color_light * color_specular * glm::clamp(glm::dot(normal, halfDir)*100 - 97,0.0f,1.0f);
 
         color = vec4(ambient + diffuse + specular, 1);
