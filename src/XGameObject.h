@@ -17,10 +17,10 @@ public:
 
     static void Destroy(XGameObject *go) {
         go->RemoveFromParent();
-        // µİ¹éÉ¾µôËùÓĞ¶ù×Ó
+        // é€’å½’åˆ æ‰æ‰€æœ‰å„¿å­
         
         for (auto it = go->childs.begin(); it != go->childs.begin();it++) {
-            (*it)->parent = nullptr;// ±ÜÃâ±éÀúÊ±ĞŞ¸Älist,·´Õı×îºóÍ³Ò»É¾³ıµô¡£
+            (*it)->parent = nullptr;// é¿å…éå†æ—¶ä¿®æ”¹list,åæ­£æœ€åç»Ÿä¸€åˆ é™¤æ‰ã€‚
             Destroy(*it);
         }
         delete go;
@@ -32,7 +32,7 @@ public:
 
     void SetParent(XGameObject *parent) 
     {
-        // °²È«¼ì²é£¬²»ÄÜ°Ñ¶ù×ÓÉèÖÃ³É¸¸Ç×¡£
+        // å®‰å…¨æ£€æŸ¥ï¼Œä¸èƒ½æŠŠå„¿å­è®¾ç½®æˆçˆ¶äº²ã€‚
         auto *tmp = parent;
         while (tmp)
         {

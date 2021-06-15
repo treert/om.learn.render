@@ -57,7 +57,7 @@ void XSoftRender::Render(XGameObject *go, const xdata::mat4 &parent_world_mat)
 
 void XSoftRender::RenderMesh(XMesh *mesh)
 {
-    // ¼¸ºÎ±ä»»
+    // å‡ ä½•å˜æ¢
     std::vector<V2F> verts;
     rep(i, mesh->vertices.size()) {
         V2F v2f;
@@ -84,7 +84,7 @@ void XSoftRender::RenderTriangle(xdata::R_in in)
     // Triangle Setup
     in.Setup(WIDTH,HEIGHT);
     if (in.TestWholeTriangle() == false) {
-        return;// ¹ıÂËµô
+        return;// è¿‡æ»¤æ‰
     }
     // Triangle Travel
     Raterize(in);
@@ -134,7 +134,7 @@ float fmax(float a, float b, float c) {
 void XSoftRender::Raterize(xdata::R_in in)
 {
     // hierarchical tile traversal
-    // Ëã¸ö¼òµ¥µÄ°üÎ§
+    // ç®—ä¸ªç®€å•çš„åŒ…å›´
     float minx = fmin(in.v[0].pos.x, in.v[1].pos.x, in.v[2].pos.x);
     float miny = fmin(in.v[0].pos.y, in.v[1].pos.y, in.v[2].pos.y);
     float maxx = fmax(in.v[0].pos.x, in.v[1].pos.x, in.v[2].pos.x);
@@ -154,7 +154,7 @@ xdata::V2F XSoftRender::VectexProcess(xdata::V2F in)
 {
     in.pos = mat_mvp * in.pos;
     in.world_pos = mat_model * in.pos;
-    in.normal = vec4(in.normal, 0) * mat_world2model;// ·¨Ïß±ä»»µ½ÊÀ½ç
+    in.normal = vec4(in.normal, 0) * mat_world2model;// æ³•çº¿å˜æ¢åˆ°ä¸–ç•Œ
 
     // in.normal = mat_model * vec4(in.normal, 0);
     in.normal = glm::normalize(in.normal);

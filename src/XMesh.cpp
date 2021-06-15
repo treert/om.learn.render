@@ -4,7 +4,7 @@ using namespace xdata;
 
 void GenSphere(XMesh *mesh, vec3 a1, vec3 a2, vec3 a3, int level) {
     if (level > 0) {
-        // ¼ÌÐøÏ¸·Ö
+        // ç»§ç»­ç»†åˆ†
         level -= 1;
         auto b1 = (a1 + a3)*0.5f;
         auto b2 = (a1 + a2)*0.5f;
@@ -16,7 +16,7 @@ void GenSphere(XMesh *mesh, vec3 a1, vec3 a2, vec3 a3, int level) {
         return;
     }
 
-    // Ìî³ä¶¥µãºÍ·¨Ïß
+    // å¡«å……é¡¶ç‚¹å’Œæ³•çº¿
     a1 = glm::normalize(a1);
     a2 = glm::normalize(a2);
     a3 = glm::normalize(a3);

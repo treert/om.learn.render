@@ -4,7 +4,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/quaternion.hpp"
 
-// Ò»Ğ©Êı¾İ½á¹¹
+// ä¸€äº›æ•°æ®ç»“æ„
 
 namespace xdata {
     typedef typename glm::vec2 vec2;
@@ -16,7 +16,7 @@ namespace xdata {
     typedef typename glm::vec4 Color;
 
 
-    // ¼¸ºÎ½×¶ÎµÄÊäÈëÊä³ö£¬ÏñËØ´¦Àí½×¶ÎµÄÊäÈë£¬Ò²ÊÇ¹âÕ¤»¯½×¶ÎµÄÊä³ö
+    // å‡ ä½•é˜¶æ®µçš„è¾“å…¥è¾“å‡ºï¼Œåƒç´ å¤„ç†é˜¶æ®µçš„è¾“å…¥ï¼Œä¹Ÿæ˜¯å…‰æ …åŒ–é˜¶æ®µçš„è¾“å‡º
     struct V2F
     {
         float one;
@@ -28,7 +28,7 @@ namespace xdata {
 
         vec3 world_pos;
 
-        int row, col;// ÆÁÄ»ÏñËØ×ø±ê
+        int row, col;// å±å¹•åƒç´ åæ ‡
 
 
         V2F() {
@@ -36,7 +36,7 @@ namespace xdata {
         }
 
         void HomogeneousDivision() {
-            // ÕâĞ©ÊÇÎªÁËºóÃæ²åÖµ×ö×¼±¸µÄ
+            // è¿™äº›æ˜¯ä¸ºäº†åé¢æ’å€¼åšå‡†å¤‡çš„
             one /= pos.w;
             uv /= pos.w;
             normal /= pos.w;
@@ -52,21 +52,21 @@ namespace xdata {
 
     };
 
-    // ¹âÕ¤µÄÊäÈë
+    // å…‰æ …çš„è¾“å…¥
     struct R_in
     {
         V2F v[3];
 
-        float A2;// Èı½ÇĞÎÏòÁ¿Ãæ»ı*2
+        float A2;// ä¸‰è§’å½¢å‘é‡é¢ç§¯*2
         vec3 E0, E1, E2;
 
         void Setup(int with, int height) {
-            // Æë´Î³ı·¨
+            // é½æ¬¡é™¤æ³•
             v[0].HomogeneousDivision();
             v[1].HomogeneousDivision();
             v[2].HomogeneousDivision();
 
-            // ÆÁÄ»Ó³Éä
+            // å±å¹•æ˜ å°„
             v[0].ScreenMap(with, height);
             v[1].ScreenMap(with, height);
             v[2].ScreenMap(with, height);
@@ -99,7 +99,7 @@ namespace xdata {
             float f0 = glm::dot(E0, t_p)*v[0].one;
             float f1 = glm::dot(E1, t_p)*v[1].one;
             float f2 = glm::dot(E2, t_p)*v[2].one;
-            if (f0 < 0 || f1 < 0 || f2 < 0) return false;// ²»ÔÚÈı½ÇĞÎÀï
+            if (f0 < 0 || f1 < 0 || f2 < 0) return false;// ä¸åœ¨ä¸‰è§’å½¢é‡Œ
 
             float u0 = f0 / (f0 + f1 + f2);
             float u1 = f1 / (f0 + f1 + f2);
@@ -107,14 +107,14 @@ namespace xdata {
 
             // interpolate
 #define lerp(name) out.name = v[0].name*u0 + v[1].name*u1 + v[2].name*u2
-            lerp(pos);// Éî¶ÈÖµ
+            lerp(pos);// æ·±åº¦å€¼
             lerp(one);
             lerp(uv);
             lerp(normal);
             lerp(world_pos);
 #undef lerp
-            if (out.pos.z > 1 || out.pos.z < -1) return false;// ²ÃÇĞµôÁË
-            // µÃµ½ÆÚÍûµÄ²åÖµ
+            if (out.pos.z > 1 || out.pos.z < -1) return false;// è£åˆ‡æ‰äº†
+            // å¾—åˆ°æœŸæœ›çš„æ’å€¼
             out.uv /= out.one;
             out.normal /= out.one;
             out.world_pos /= out.one;

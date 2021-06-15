@@ -10,7 +10,7 @@
 
 class XGameObject;
 
-// ¹ÜÀíÁËÕû¸öäÖÈ¾×´Ì¬£¬uniformÀàµÄ±äÁ¿Ò²ÔÚÆäÖĞ
+// ç®¡ç†äº†æ•´ä¸ªæ¸²æŸ“çŠ¶æ€ï¼Œuniformç±»çš„å˜é‡ä¹Ÿåœ¨å…¶ä¸­
 class XSoftRender
 {
 private:
@@ -31,7 +31,7 @@ private:
     xdata::mat4 mat_project;
     xdata::mat4 mat_view;
     xdata::mat4 mat_model;
-    xdata::mat4 mat_world2model;// mat_modelµÄÄæ¾ØÕó
+    xdata::mat4 mat_world2model;// mat_modelçš„é€†çŸ©é˜µ
     xdata::mat4 mat_mvp;
 
     xdata::vec3 m_light_dir;
